@@ -13,6 +13,65 @@ The transaction to create a mint account needs two instructions:
 2. Invoke the Token Program to initialize the mint account data.
 
 <CodeTabs storage="cookbook" flags="r">
+```ts !! title="Gill"
+import { createTransaction, generateKeyPairSigner, type KeyPairSigner, createSolanaClient, getMinimumBalanceForRentExemption, getExplorerLink, getSignatureFromTransaction, signTransactionMessageWithSigners } from "gill";
+import { loadKeypairSignerFromFile } from "gill/node";
+import { TOKEN_2022_PROGRAM_ADDRESS, getCreateAccountInstruction, getCreateMetadataAccountV3Instruction, getInitializeMintInstruction, getMintSize } from "gill/programs";
+
+const { rpc, sendAndConfirmTransaction } = createSolanaClient({
+    urlOrMoniker: "localnet",
+});
+
+// This defaults to the file path used by the Solana CLI: `~/.config/solana/id.json`
+const signer: KeyPairSigner = await loadKeypairSignerFromFile();
+console.log("signer:", signer.address);
+
+const tokenProgram = TOKEN_2022_PROGRAM_ADDRESS;
+
+const mint = await generateKeyPairSigner();
+const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
+
+const space = getMintSize();
+
+const transaction = createTransaction({
+    feePayer: signer,
+    version: "legacy",
+    instructions: [
+        getCreateAccountInstruction({
+            space,
+            lamports: getMinimumBalanceForRentExemption(space),
+            newAccount: mint,
+            payer: signer,
+            programAddress: tokenProgram,
+        }),
+        getInitializeMintInstruction(
+            {
+                mint: mint.address,
+                mintAuthority: signer.address,
+                freezeAuthority: signer.address,
+                decimals: 9,
+            },
+            {
+                programAddress: tokenProgram,
+            },
+        ),
+
+    ],
+    latestBlockhash,
+});
+
+const signedTransaction = await signTransactionMessageWithSigners(transaction);
+
+console.log(
+    "Explorer:",
+    getExplorerLink({
+        cluster: "localnet",
+        transaction: getSignatureFromTransaction(signedTransaction),
+    }),
+);
+
+await sendAndConfirmTransaction(signedTransaction);
+```
 
 ```ts !! title="Kit"
 import {
@@ -94,6 +153,7 @@ const transactionSignature = getSignatureFromTransaction(signedTransaction);
 console.log("Mint Address:", mint.address);
 console.log("Transaction Signature:", transactionSignature);
 ```
+
 
 ```ts !! title="Legacy"
 import {
