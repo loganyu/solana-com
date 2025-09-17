@@ -144,7 +144,7 @@ async function setup() {
     tokenProgram: TOKEN_2022_PROGRAM_ADDRESS
   });
 
-  const crateAuthorityATAInstruction =
+  const createAuthorityATAInstruction =
     await getCreateAssociatedTokenInstructionAsync({
       payer: MINT_AUTHORITY,
       mint: mint.address,
@@ -163,7 +163,7 @@ async function setup() {
   const instructions = [
     createAccountInstruction,
     initializeMintInstruction,
-    crateAuthorityATAInstruction,
+    createAuthorityATAInstruction,
     mintToInstruction
   ];
 
