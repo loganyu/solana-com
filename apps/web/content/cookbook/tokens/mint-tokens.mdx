@@ -11,9 +11,27 @@ specific token account.
 <CodeTabs storage="cookbook" flags="r">
 
 ```ts !! title="Gill"
-import { address, airdropFactory, createSolanaClient, createSolanaRpcSubscriptions, createTransaction, generateKeyPairSigner, getExplorerLink, getSignatureFromTransaction, lamports, signTransactionMessageWithSigners } from "gill";
-import { } from "gill/node";
-import { getCreateAccountInstruction, getCreateAssociatedTokenInstruction, getInitializeMintInstruction, getMintSize, getMintToCheckedInstruction, TOKEN_2022_PROGRAM_ADDRESS } from "gill/programs";
+import {
+    address,
+    airdropFactory,
+    createSolanaClient,
+    createSolanaRpcSubscriptions,
+    createTransaction,
+    generateKeyPairSigner,
+    getExplorerLink,
+    getSignatureFromTransaction,
+    lamports,
+    signTransactionMessageWithSigners
+} from "gill";
+import {
+    getAssociatedTokenAccountAddress,
+    getCreateAccountInstruction,
+    getCreateAssociatedTokenInstruction,
+    getInitializeMintInstruction,
+    getMintSize,
+    getMintToCheckedInstruction,
+    TOKEN_2022_PROGRAM_ADDRESS
+} from "gill/programs";
 
 
 const { rpc, sendAndConfirmTransaction } = createSolanaClient({
@@ -43,18 +61,15 @@ const transaction = createTransaction({
     latestBlockhash,
 });
 const signedTransaction = await signTransactionMessageWithSigners(transaction);
-
-console.log(
-    "Explorer:",
-    getExplorerLink({
-        cluster: "localnet",
-        transaction: getSignatureFromTransaction(signedTransaction),
-    }),
-);
-
 await sendAndConfirmTransaction(signedTransaction);
 
+const txSignature = getSignatureFromTransaction(signedTransaction);
+console.log("Transaction Signature: ", txSignature);
 
+/*
+ * The setup function initializes the mint and token accounts
+ *
+ */
 async function setup() {
     await airdropFactory({ rpc, rpcSubscriptions })({
         recipientAddress: MINT_AUTHORITY.address,
@@ -69,36 +84,41 @@ async function setup() {
 
     const rent = await rpc.getMinimumBalanceForRentExemption(space).send();
 
+    // create & initialize mint account
+    const createAccountInstruction = getCreateAccountInstruction({
+        payer: MINT_AUTHORITY,
+        newAccount: mint,
+        lamports: rent,
+        space,
+        programAddress: TOKEN_2022_PROGRAM_ADDRESS,
+    });
+
+    const initializeMintInstruction = getInitializeMintInstruction(
+        {
+            mint: mint.address,
+            decimals: DECIMALS,
+            mintAuthority: MINT_AUTHORITY.address,
+        },
+        {
+            programAddress: TOKEN_2022_PROGRAM_ADDRESS,
+        },
+    );
+
+    const associatedTokenAddress = await getAssociatedTokenAccountAddress(mint, MINT_AUTHORITY, TOKEN_2022_PROGRAM_ADDRESS);
+    const createAtaInstruction = getCreateAssociatedTokenInstruction({
+        payer: MINT_AUTHORITY,
+        mint: mint.address,
+        owner: MINT_AUTHORITY.address,
+        tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
+        ata: associatedTokenAddress,
+    });
     const transaction = createTransaction({
         feePayer: MINT_AUTHORITY,
         version: "legacy",
         instructions: [
-            getCreateAccountInstruction({
-                payer: MINT_AUTHORITY,
-                newAccount: mint,
-                lamports: rent,
-                space,
-                programAddress: TOKEN_2022_PROGRAM_ADDRESS,
-            }),
-            getInitializeMintInstruction(
-                {
-                    mint: mint.address,
-                    decimals: 2,
-                    mintAuthority: MINT_AUTHORITY.address,
-                },
-                {
-                    programAddress: TOKEN_2022_PROGRAM_ADDRESS,
-                },
-            ),
-            getCreateAssociatedTokenInstruction({
-                payer: MINT_AUTHORITY,
-                mint: mint.address,
-                owner: MINT_AUTHORITY.address,
-                tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
-                ata: associatedTokenAddress,
-            }),
-
-
+            createAccountInstruction,
+            initializeMintInstruction,
+            createAtaInstruction
         ],
         latestBlockhash,
     });
@@ -114,7 +134,6 @@ async function setup() {
     };
 
 }
-
 ```
 
 ```ts !! title="Kit"

@@ -19,8 +19,27 @@ following examples:
 <CodeTabs storage="cookbook" flags="r">
 
 ```ts !! title="Gill"
-import { address, airdropFactory, createSolanaClient, createSolanaRpcSubscriptions, createTransaction, generateKeyPairSigner, getExplorerLink, getSignatureFromTransaction, lamports, signTransactionMessageWithSigners } from "gill";
-import { getAssociatedTokenAccountAddress, getCreateAccountInstruction, getCreateAssociatedTokenInstruction, getInitializeMintInstruction, getMintSize, getMintToCheckedInstruction, getTransferCheckedInstruction, TOKEN_2022_PROGRAM_ADDRESS } from "gill/programs";
+import {
+    airdropFactory,
+    createSolanaClient,
+    createSolanaRpcSubscriptions,
+    createTransaction,
+    generateKeyPairSigner,
+    getExplorerLink,
+    getSignatureFromTransaction,
+    lamports,
+    signTransactionMessageWithSigners
+} from "gill";
+import {
+    getAssociatedTokenAccountAddress,
+    getCreateAccountInstruction,
+    getCreateAssociatedTokenInstruction,
+    getInitializeMintInstruction,
+    getMintSize,
+    getMintToCheckedInstruction,
+    getTransferCheckedInstruction,
+    TOKEN_2022_PROGRAM_ADDRESS
+} from "gill/programs";
 
 
 const { rpc, sendAndConfirmTransaction } = createSolanaClient({
@@ -36,6 +55,7 @@ const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
 let { mint, authorityATA } = await setup();
 
+// transfer
 const receiverATA = await getAssociatedTokenAccountAddress(mint, RECEIVER.address, TOKEN_2022_PROGRAM_ADDRESS);
 
 
@@ -57,17 +77,16 @@ const transaction = createTransaction({
 });
 const signedTransaction = await signTransactionMessageWithSigners(transaction);
 
-console.log(
-    "Explorer:",
-    getExplorerLink({
-        cluster: "localnet",
-        transaction: getSignatureFromTransaction(signedTransaction),
-    }),
-);
-
 await sendAndConfirmTransaction(signedTransaction);
 
+const txSignature = getSignatureFromTransaction(signedTransaction);
+console.log("Transaction Signature:", txSignature);
 
+/*
+ * The setup function initializes the mint and associated token accounts,
+ * and mints tokens to said associated token account
+ *
+ */
 async function setup() {
     await airdropFactory({ rpc, rpcSubscriptions })({
         recipientAddress: MINT_AUTHORITY.address,
@@ -101,7 +120,7 @@ async function setup() {
             programAddress: TOKEN_2022_PROGRAM_ADDRESS,
         },
     );
-
+    // create token account
     const authorityATA = await getAssociatedTokenAccountAddress(mint.address, MINT_AUTHORITY.address, TOKEN_2022_PROGRAM_ADDRESS);
 
     const receiverATA = await getAssociatedTokenAccountAddress(mint, RECEIVER.address, TOKEN_2022_PROGRAM_ADDRESS);
@@ -156,7 +175,6 @@ async function setup() {
     };
 
 }
-
 ```
 
 ```ts !! title="Kit"

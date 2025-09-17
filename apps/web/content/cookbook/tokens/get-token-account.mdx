@@ -12,7 +12,11 @@ amount(balance).
 
 ```ts !! title="Gill"
 import { createSolanaClient, address } from "gill";
-import { TOKEN_2022_PROGRAM_ADDRESS, fetchToken, getAssociatedTokenAccountAddress } from "gill/programs";
+import {
+    TOKEN_2022_PROGRAM_ADDRESS,
+    fetchToken,
+    getAssociatedTokenAccountAddress
+} from "gill/programs";
 
 
 const { rpc } = createSolanaClient({
@@ -29,7 +33,6 @@ const associatedTokenAddress = await getAssociatedTokenAccountAddress(mintAddres
 const ataDetails = await fetchToken(rpc, associatedTokenAddress);
 
 console.log(ataDetails);
-
 ```
 
 ```ts !! title="Kit"

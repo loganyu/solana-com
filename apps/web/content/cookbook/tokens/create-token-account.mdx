@@ -17,8 +17,24 @@ units of a specific token (mint).
 <CodeTabs storage="cookbook" flags="r">
 
 ```ts !! title="Gill"
-import { createTransaction, generateKeyPairSigner, createSolanaClient, getExplorerLink, getSignatureFromTransaction, signTransactionMessageWithSigners, airdropFactory, createSolanaRpcSubscriptions, lamports } from "gill";
-import { TOKEN_2022_PROGRAM_ADDRESS, getAssociatedTokenAccountAddress, getCreateAccountInstruction, getInitializeMintInstruction, getMintSize } from "gill/programs";
+import {
+    createTransaction,
+    generateKeyPairSigner,
+    createSolanaClient,
+    getExplorerLink,
+    getSignatureFromTransaction,
+    signTransactionMessageWithSigners,
+    airdropFactory,
+    createSolanaRpcSubscriptions,
+    lamports
+} from "gill";
+import {
+    TOKEN_2022_PROGRAM_ADDRESS,
+    getAssociatedTokenAccountAddress,
+    getCreateAccountInstruction,
+    getInitializeMintInstruction,
+    getMintSize
+} from "gill/programs";
 import { getCreateAssociatedTokenInstruction } from "gill/programs";
 
 const { rpc, sendAndConfirmTransaction } = createSolanaClient({
@@ -71,17 +87,13 @@ const transaction = createTransaction({
 });
 
 const signedTransaction = await signTransactionMessageWithSigners(transaction);
-
-console.log(
-    "Explorer:",
-    getExplorerLink({
-        cluster: "localnet",
-        transaction: getSignatureFromTransaction(signedTransaction),
-    }),
-);
-
 await sendAndConfirmTransaction(signedTransaction);
+
+const transactionSignature = getSignatureFromTransaction(signedTransaction);
+
 console.log("Mint Address: ", mint.address.toString());
+console.log("Transaction Signature: ", transactionSignature);
+
 
 
 // !mark
@@ -115,9 +127,10 @@ const transaction2 = createTransaction({
 });
 
 const signedTransaction2 = await signTransactionMessageWithSigners(transaction2);
-
 await sendAndConfirmTransaction(signedTransaction2);
 
+const transactionSignature2 = getSignatureFromTransaction(signedTransaction2);
+console.log("Transaction Signature: ", transactionSignature2);
 ```
 
 ```ts !! title="Kit"

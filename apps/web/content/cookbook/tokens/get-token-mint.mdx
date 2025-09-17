@@ -11,7 +11,7 @@ need to get the account info for the token mint.
 <CodeTabs storage="cookbook" flags="r">
 
 ```ts !! title="Gill"
-import { address, createSolanaClient, KeyPairSigner } from "gill";
+import { address, createSolanaClient } from "gill";
 import { fetchMint } from "gill/programs";
 
 const { rpc } = createSolanaClient({
@@ -24,7 +24,6 @@ const mintAddress = address("2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo")
 const mint = await fetchMint(rpc, mintAddress);
 
 console.log(mint);
-
 ```
 
 ```ts !! title="Kit"
