@@ -39,11 +39,11 @@ import {
   signTransactionMessageWithSigners,
 } from "gill";
 import {
-  findAssociatedTokenPda,
+  getAssociatedTokenAccountAddress,
   getCreateAssociatedTokenInstructionAsync,
+  getTransferSolInstruction,
   TOKEN_PROGRAM_ADDRESS,
-} from "gill/programs/token";
-import {getTransferSolInstruction} from "gill/programs"
+} from "gill/programs";
 import { getSyncNativeInstruction } from "@solana-program/token";
 
 const { rpc, rpcSubscriptions,sendAndConfirmTransaction } = createSolanaClient(
@@ -58,12 +58,12 @@ const feePayer = await generateKeyPairSigner();
 // Native mint (Wrapped SOL) address
 const NATIVE_MINT = address("So11111111111111111111111111111111111111112");
 
-// Use findAssociatedTokenPda to derive the ATA address for WSOL
-const [associatedTokenAddress] = await findAssociatedTokenPda({
-  mint: NATIVE_MINT,
-  owner: feePayer.address,
-  tokenProgram: TOKEN_PROGRAM_ADDRESS,
-});
+// Use getAssociatedTokenAccountAddress to derive the ATA address for WSOL
+const associatedTokenAddress = await getAssociatedTokenAccountAddress(
+  NATIVE_MINT,
+  feePayer.address,
+  TOKEN_PROGRAM_ADDRESS
+);
 
 const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 await requestAirdrop()
@@ -104,12 +104,8 @@ const tx = createTransaction({
 
 const signedTx = await signTransactionMessageWithSigners(tx);
 
-console.log(`Explorer ${
-    getExplorerLink({
-        cluster:'devnet',
-        transaction:getSignatureFromTransaction(signedTx)
-    })
-}`);
+const txSignature = getSignatureFromTransaction(signedTx);
+console.log("Transaction Signature:", txSignature);
 
 await sendAndConfirmTransaction(signedTx)
 
@@ -361,11 +357,11 @@ import {
   lamports,
 } from "gill";
 import {
-  findAssociatedTokenPda,
+  getAssociatedTokenAccountAddress,
   getTokenSize,
   TOKEN_PROGRAM_ADDRESS,
-} from "gill/programs/token";
-import { getCreateAccountInstruction } from "gill/programs";
+  getCreateAccountInstruction
+} from "gill/programs";
 import { getCloseAccountInstruction, getCreateAssociatedTokenInstructionAsync, getInitializeAccountInstruction, getSyncNativeInstruction, getTransferCheckedInstruction } from "@solana-program/token";
 
 const { rpc,rpcSubscriptions,sendAndConfirmTransaction } = createSolanaClient({
@@ -381,12 +377,13 @@ const RECIPIENT = await generateKeyPairSigner();
 // Native mint (Wrapped SOL) address
 const NATIVE_MINT = address("So11111111111111111111111111111111111111112");
 
-// Use findAssociatedTokenPda to derive the ATA address for WSOL
-const [recipientATA] = await findAssociatedTokenPda({
-  mint: NATIVE_MINT,
-  owner: RECIPIENT.address,
-  tokenProgram: TOKEN_PROGRAM_ADDRESS,
-});
+// Use getAssociatedTokenAccountAddress to derive the ATA address for WSOL
+const associatedTokenAddress = await getAssociatedTokenAccountAddress(
+  NATIVE_MINT,
+  RECIPIENT.address,
+  TOKEN_PROGRAM_ADDRESS
+);
+
 
 const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
@@ -459,12 +456,8 @@ const tx = createTransaction({
 
 const signedTx = await signTransactionMessageWithSigners(tx);
 
-console.log(
-  `Explorer ${getExplorerLink({
-    cluster: "devnet",
-    transaction: getSignatureFromTransaction(signedTx),
-  })}`
-);
+const txSignature = getSignatureFromTransaction(signedTx);
+console.log("Transaction Signature:", txSignature);
 
 await sendAndConfirmTransaction(signedTx);
 

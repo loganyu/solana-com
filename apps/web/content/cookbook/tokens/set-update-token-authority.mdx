@@ -84,12 +84,8 @@ const tx = createTransaction({
 
 const signedTx = await signTransactionMessageWithSigners(tx);
 
-console.log(
-  `Explorer ${getExplorerLink({
-    cluster: "devnet",
-    transaction: getSignatureFromTransaction(signedTx),
-  })}`
-);
+const txSignature = getSignatureFromTransaction(signedTx);
+console.log("Transaction Signature:", txSignature);
 
 await sendAndConfirmTransaction(signedTx)
 
@@ -129,11 +125,11 @@ async function setup() {
   });
 
   // create token account
-  const [authorityATA] = await findAssociatedTokenPda({
-    mint: mint.address,
-    owner: MINT_AUTHORITY.address,
-    tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
-  });
+  const authorityATA = await getAssociatedTokenAccountAddress(
+    mint.address,
+    MINT_AUTHORITY.address,
+    TOKEN_2022_PROGRAM_ADDRESS
+  );
 
   const createAuthorityATAInstruction =
     await getCreateAssociatedTokenInstructionAsync({
@@ -167,12 +163,8 @@ async function setup() {
 
   const signedTx = await signTransactionMessageWithSigners(tx);
 
-  console.log(
-    `Explorer ${getExplorerLink({
-      cluster: "devnet",
-      transaction: getSignatureFromTransaction(signedTx),
-    })}`
-  );
+  const txSignature = getSignatureFromTransaction(signedTx);
+  console.log("Transaction Signature:", txSignature);
 
   await sendAndConfirmTransaction(signedTx);
 
