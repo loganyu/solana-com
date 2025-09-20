@@ -48,7 +48,7 @@ const DECIMALS = 9;
 
 let { mint, authorityATA } = await setup();
 
-// Non-native account can only be closed if its balance is zero' hence why the burn token instruction
+// Non-native account can only be closed if its balance is zero hence why the burn token instruction
 const burnTokenIx = getBurnCheckedInstruction({
   account: authorityATA,
   mint: mint,
