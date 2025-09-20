@@ -37,6 +37,7 @@ import {
   getSignatureFromTransaction,
   lamports,
   signTransactionMessageWithSigners,
+  airdropFactory,
 } from "gill";
 import {
   getAssociatedTokenAccountAddress,
@@ -80,9 +81,9 @@ const createAtaInstruction = await getCreateAssociatedTokenInstructionAsync({
 const amountToSync = 1_000_000_000n;
 
 const transferSolInstruction = getTransferSolInstruction({
-    source: feePayer,
-    destination: associatedTokenAddress,
-    amount: amountToSync,
+  source: feePayer,
+  destination: associatedTokenAddress,
+  amount: amountToSync,
 });
 
 const syncNativeInstruction = getSyncNativeInstruction({
@@ -373,6 +374,7 @@ const { rpc,rpcSubscriptions,sendAndConfirmTransaction } = createSolanaClient({
 const SENDER = await generateKeyPairSigner();
 const SENDER_TEMPORARY_TOKEN_ACCOUNT = await generateKeyPairSigner();
 const RECIPIENT = await generateKeyPairSigner();
+const DECIMALS = 9;
 
 // Native mint (Wrapped SOL) address
 const NATIVE_MINT = address("So11111111111111111111111111111111111111112");
@@ -429,7 +431,7 @@ const transferTokenInstruction = getTransferCheckedInstruction({
   destination: recipientATA,
   authority: SENDER,
   amount: amount, // 1 WSOL
-  decimals: 9
+  decimals: DECIMALS
 });
 
 // close temp account

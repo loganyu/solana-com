@@ -17,6 +17,7 @@ import {
   getExplorerLink,
   getSignatureFromTransaction,
   signTransactionMessageWithSigners,
+  airdropFactory
 } from "gill";
 import {
   getAssociatedTokenAccountAddress,
@@ -26,29 +27,32 @@ import {
   getMintSize,
   getMintToCheckedInstruction,
   getRevokeInstruction,
-  TOKEN_2022_PROGRAM_ADDRESS,
+  TOKEN_2022_PROGRAM_ADDRESS
 } from "gill/programs";
 
-const { rpc,rpcSubscriptions,sendAndConfirmTransaction } = createSolanaClient({
-  urlOrMoniker: "devnet",
-});
+const { rpc, rpcSubscriptions, sendAndConfirmTransaction } = createSolanaClient(
+  {
+    urlOrMoniker: "devnet"
+  }
+);
 
 const MINT_AUTHORITY = await generateKeyPairSigner();
 
 const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
+const DECIMALS = 9;
 
 let { authorityATA } = await setup();
 
 const revokeDelegateIx = getRevokeInstruction({
   source: authorityATA,
-  owner: MINT_AUTHORITY,
+  owner: MINT_AUTHORITY
 });
 
 const tx = createTransaction({
   feePayer: MINT_AUTHORITY,
   version: "legacy",
   instructions: [revokeDelegateIx],
-  latestBlockhash,
+  latestBlockhash
 });
 
 const signedTx = await signTransactionMessageWithSigners(tx);
@@ -60,15 +64,14 @@ await sendAndConfirmTransaction(signedTx);
 
 /*
  * The setup function initializes the mint and associated token accounts,
+ * and mints tokens to said associated token account
  *
  */
-
 async function setup() {
-
   await airdropFactory({ rpc, rpcSubscriptions })({
-        recipientAddress: MINT_AUTHORITY.address,
-        lamports: lamports(1_000_000_000n),
-        commitment: "confirmed"
+    recipientAddress: MINT_AUTHORITY.address,
+    lamports: lamports(1_000_000_000n),
+    commitment: "confirmed"
   });
 
   const mint = await generateKeyPairSigner();
@@ -83,27 +86,27 @@ async function setup() {
     newAccount: mint,
     lamports: rent,
     space,
-    programAddress: TOKEN_2022_PROGRAM_ADDRESS,
+    programAddress: TOKEN_2022_PROGRAM_ADDRESS
   });
 
   const initializeMintInstruction = getInitializeMintInstruction({
     mint: mint.address,
-    decimals: 9,
-    mintAuthority: MINT_AUTHORITY.address,
+    decimals: DECIMALS,
+    mintAuthority: MINT_AUTHORITY.address
   });
 
   // create token account
-    const authorityATA = await getAssociatedTokenAccountAddress(
-       mint.address,
-       MINT_AUTHORITY.address,
-      TOKEN_2022_PROGRAM_ADDRESS,
-    );
+  const authorityATA = await getAssociatedTokenAccountAddress(
+    mint.address,
+    MINT_AUTHORITY.address,
+    TOKEN_2022_PROGRAM_ADDRESS
+  );
 
   const createAuthorityATAInstruction =
     await getCreateAssociatedTokenInstructionAsync({
       payer: MINT_AUTHORITY,
       mint: mint.address,
-      owner: MINT_AUTHORITY.address,
+      owner: MINT_AUTHORITY.address
     });
 
   // mintTo token account
@@ -112,21 +115,21 @@ async function setup() {
     token: authorityATA,
     mintAuthority: MINT_AUTHORITY,
     amount: 1_000_000_000_000n, // 1000
-    decimals: 9,
+    decimals: DECIMALS
   });
 
   const instructions = [
     createAccountInstruction,
     initializeMintInstruction,
     createAuthorityATAInstruction,
-    mintToInstruction,
+    mintToInstruction
   ];
 
   const tx = createTransaction({
     feePayer: MINT_AUTHORITY,
     version: "legacy",
     instructions,
-    latestBlockhash,
+    latestBlockhash
   });
 
   const signedTx = await signTransactionMessageWithSigners(tx);
@@ -138,7 +141,7 @@ async function setup() {
 
   return {
     mint: mint.address,
-    authorityATA,
+    authorityATA
   };
 }
 ```
