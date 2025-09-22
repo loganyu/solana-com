@@ -16,15 +16,15 @@ need to generate a keypair to sign your transactions.
 
 <CodeTabs storage="cookbook" flags="r">
 
-```ts !! title="Kit"
-import { generateKeyPairSigner } from "@solana/kit";
+```ts !! title="Gill"
+import { generateKeyPairSigner } from "gill";
 
 const signer = await generateKeyPairSigner();
 console.log("address: ", signer.address);
 ```
 
-```ts !! title="Gill"
-import { generateKeyPairSigner } from "gill";
+```ts !! title="Kit"
+import { generateKeyPairSigner } from "@solana/kit";
 
 const signer = await generateKeyPairSigner();
 console.log("address: ", signer.address);

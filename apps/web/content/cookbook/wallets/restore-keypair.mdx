@@ -10,8 +10,9 @@ allows you to access your wallet and sign transactions in your dApp.
 
 <CodeTabs storage="cookbook" flags="r">
 
-```ts !! title="Kit"
-import { createKeyPairSignerFromBytes } from "@solana/kit";
+
+```ts !! title="Gill"
+import { createKeyPairSignerFromBytes } from "gill";
 
 const keypairBytes = new Uint8Array([
   174, 47, 154, 16, 202, 193, 206, 113, 199, 190, 53, 133, 169, 175, 31, 56,
@@ -24,8 +25,8 @@ const signer = await createKeyPairSignerFromBytes(keypairBytes);
 console.log(signer.address);
 ```
 
-```ts !! title="Gill"
-import { createKeyPairSignerFromBytes } from "gill";
+```ts !! title="Kit"
+import { createKeyPairSignerFromBytes } from "@solana/kit";
 
 const keypairBytes = new Uint8Array([
   174, 47, 154, 16, 202, 193, 206, 113, 199, 190, 53, 133, 169, 175, 31, 56,
@@ -77,12 +78,12 @@ fn main() -> Result<()> {
 
 <CodeTabs storage="cookbook" flags="r">
 
-```ts !! title="Kit"
+```ts !! title="Gill"
 import {
   createKeyPairFromBytes,
   createSignerFromKeyPair,
   getBase58Encoder
-} from "@solana/kit";
+} from "gill";
 
 const keypairBase58 =
   "5MaiiCavjCmn9Hs1o3eznqDEhRwxo7pXiAYez7keQUviUkauRiTMD8DrESdrNjN8zd9mTmVhRvBJeg5vhyvgrAhG";
@@ -95,12 +96,12 @@ const signer = await createSignerFromKeyPair(keypair);
 console.log(signer.address);
 ```
 
-```ts !! title="Gill"
+```ts !! title="Kit"
 import {
   createKeyPairFromBytes,
   createSignerFromKeyPair,
   getBase58Encoder
-} from "gill";
+} from "@solana/kit";
 
 const keypairBase58 =
   "5MaiiCavjCmn9Hs1o3eznqDEhRwxo7pXiAYez7keQUviUkauRiTMD8DrESdrNjN8zd9mTmVhRvBJeg5vhyvgrAhG";

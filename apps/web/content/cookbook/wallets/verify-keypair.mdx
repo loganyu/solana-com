@@ -9,8 +9,8 @@ public key:
 
 <CodeTabs storage="cookbook" flags="r">
 
-```ts !! title="Kit"
-import { createKeyPairSignerFromBytes, address } from "@solana/kit";
+```ts !! title="Gill"
+import { createKeyPairSignerFromBytes, address } from "gill";
 
 const publicKey = address("24PNhTaNtomHhoy3fTRaMhAFCRj4uHqhZEEoWrKDbR5p");
 
@@ -26,8 +26,8 @@ const signer = await createKeyPairSignerFromBytes(keypairBytes);
 console.log(signer.address === publicKey);
 ```
 
-```ts !! title="Gill"
-import { createKeyPairSignerFromBytes, address } from "gill";
+```ts !! title="Kit"
+import { createKeyPairSignerFromBytes, address } from "@solana/kit";
 
 const publicKey = address("24PNhTaNtomHhoy3fTRaMhAFCRj4uHqhZEEoWrKDbR5p");
 

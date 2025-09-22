@@ -10,8 +10,8 @@ convert the mnemonic to Keypairs for local testing.
 
 <CodeTabs storage="cookbook" flags="r">
 
-```ts !! title="Kit"
-import { createKeyPairSignerFromPrivateKeyBytes } from "@solana/kit";
+```ts !! title="Gill"
+import { createKeyPairSignerFromPrivateKeyBytes } from "gill";
 import * as bip39 from "bip39";
 
 const mnemonic =
@@ -28,8 +28,8 @@ const signer = await createKeyPairSignerFromPrivateKeyBytes(
 console.log(signer.address);
 ```
 
-```ts !! title="Gill"
-import { createKeyPairSignerFromPrivateKeyBytes } from "gill";
+```ts !! title="Kit"
+import { createKeyPairSignerFromPrivateKeyBytes } from "@solana/kit";
 import * as bip39 from "bip39";
 
 const mnemonic =
@@ -84,10 +84,10 @@ fn main() -> Result<()> {
 
 <CodeTabs storage="cookbook" flags="r">
 
-```ts !! title="Kit"
+```ts !! title="Gill"
 import { HDKey } from "micro-ed25519-hdkey";
 import * as bip39 from "bip39";
-import { createKeyPairSignerFromPrivateKeyBytes } from "@solana/kit";
+import { createKeyPairSignerFromPrivateKeyBytes } from "gill";
 
 const mnemonic =
   "neither lonely flavor argue grass remind eye tag avocado spot unusual intact";
@@ -106,10 +106,10 @@ for (let i = 0; i < 10; i++) {
 }
 ```
 
-```ts !! title="Gill"
+```ts !! title="Kit"
 import { HDKey } from "micro-ed25519-hdkey";
 import * as bip39 from "bip39";
-import { createKeyPairSignerFromPrivateKeyBytes } from "gill";
+import { createKeyPairSignerFromPrivateKeyBytes } from "@solana/kit";
 
 const mnemonic =
   "neither lonely flavor argue grass remind eye tag avocado spot unusual intact";
