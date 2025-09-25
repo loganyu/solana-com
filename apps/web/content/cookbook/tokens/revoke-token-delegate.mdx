@@ -11,14 +11,14 @@ Revoke will set delegate to null and set delegated amount to 0.
 
 ```ts !! title="Gill"
 import {
+  airdropFactory,
   createSolanaClient,
   createTransaction,
   generateKeyPairSigner,
   getExplorerLink,
   getSignatureFromTransaction,
+  lamports,
   signTransactionMessageWithSigners,
-  airdropFactory,
-  lamports
 } from "gill";
 import {
   getAssociatedTokenAccountAddress,
@@ -33,7 +33,7 @@ import {
 
 const { rpc, rpcSubscriptions, sendAndConfirmTransaction } = createSolanaClient(
   {
-    urlOrMoniker: "devnet"
+    urlOrMoniker: "localnet"
   }
 );
 
@@ -136,7 +136,6 @@ async function setup() {
   const signedTx = await signTransactionMessageWithSigners(tx);
 
   const txSignature = getSignatureFromTransaction(signedTx);
-  console.log("Transaction Signature:", txSignature);
 
   await sendAndConfirmTransaction(signedTx);
 

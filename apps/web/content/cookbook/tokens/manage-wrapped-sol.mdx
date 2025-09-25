@@ -30,6 +30,7 @@ There are two ways to add balance for Wrapped SOL
 ```ts !! title="Gill"
 import {
   address,
+  airdropFactory,
   createSolanaClient,
   createTransaction,
   generateKeyPairSigner,
@@ -37,7 +38,6 @@ import {
   getSignatureFromTransaction,
   lamports,
   signTransactionMessageWithSigners,
-  airdropFactory,
 } from "gill";
 import {
   getAssociatedTokenAccountAddress,
@@ -49,7 +49,7 @@ import { getSyncNativeInstruction } from "@solana-program/token";
 
 const { rpc, rpcSubscriptions,sendAndConfirmTransaction } = createSolanaClient(
   {
-    urlOrMoniker: "devnet",
+    urlOrMoniker: "localnet",
   }
 );
 
@@ -348,13 +348,13 @@ async fn main() -> anyhow::Result<()> {
 ```ts !! title ="Gill"
 import {
   address,
+  airdropFactory,
   createSolanaClient,
   createTransaction,
   getExplorerLink,
   getSignatureFromTransaction,
   generateKeyPairSigner,
   signTransactionMessageWithSigners,
-  airdropFactory,
   lamports,
 } from "gill";
 import {
@@ -366,9 +366,8 @@ import {
 import { getCloseAccountInstruction, getCreateAssociatedTokenInstructionAsync, getInitializeAccountInstruction, getSyncNativeInstruction, getTransferCheckedInstruction } from "@solana-program/token";
 
 const { rpc,rpcSubscriptions,sendAndConfirmTransaction } = createSolanaClient({
-  urlOrMoniker: "devnet",
+  urlOrMoniker: "localnet",
 });
-
 
 /* constants */
 const SENDER = await generateKeyPairSigner();

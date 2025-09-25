@@ -15,31 +15,31 @@ situations:
 
 ```ts !! title="Gill"
 import {
+  airdropFactory,
   createSolanaClient,
-  generateKeyPairSigner,
   createTransaction,
-  signTransactionMessageWithSigners,
+  generateKeyPairSigner,
   getExplorerLink,
   getSignatureFromTransaction,
-  airdropFactory,
   lamports,
+  signTransactionMessageWithSigners,
 } from "gill";
 import {
-  getMintSize,
-  getCreateAccountInstruction,
-  TOKEN_2022_PROGRAM_ADDRESS,
-  getInitializeMintInstruction,
   getAssociatedTokenAccountAddress,
-  getCreateAssociatedTokenInstructionAsync,
-  getMintToCheckedInstruction,
-  getCloseAccountInstruction,
+  getBurnCheckedInstruction,
   getBurnInstruction,
-  getBurnCheckedInstruction
+  getCloseAccountInstruction,
+  getCreateAccountInstruction,
+  getCreateAssociatedTokenInstructionAsync,
+  getInitializeMintInstruction,
+  getMintSize,
+  getMintToCheckedInstruction,
+  TOKEN_2022_PROGRAM_ADDRESS,
 } from "gill/programs";
 
 const { rpc, rpcSubscriptions, sendAndConfirmTransaction } = createSolanaClient(
   {
-    urlOrMoniker: "devnet"
+    urlOrMoniker: "localnet"
   }
 );
 
@@ -151,7 +151,6 @@ async function setup() {
   const signedTx = await signTransactionMessageWithSigners(tx);
 
   const txSignature = getSignatureFromTransaction(signedTx);
-  console.log("Transaction Signature:", txSignature);
 
   await sendAndConfirmTransaction(signedTx);
 

@@ -9,24 +9,24 @@ You can burn tokens if you are the token account authority.
 
 ```ts !! title="Gill"
 import {
+  airdropFactory,
   createSolanaClient,
-  generateKeyPairSigner,
   createTransaction,
-  signTransactionMessageWithSigners,
+  generateKeyPairSigner,
   getExplorerLink,
   getSignatureFromTransaction,
-  airdropFactory,
-  lamports
+  lamports,
+  signTransactionMessageWithSigners,
 } from "gill";
 import {
-  getMintSize,
-  getCreateAccountInstruction,
-  TOKEN_2022_PROGRAM_ADDRESS,
-  getInitializeMintInstruction,
-  getCreateAssociatedTokenInstructionAsync,
-  getMintToCheckedInstruction,
   getBurnCheckedInstruction,
-  getAssociatedTokenAccountAddress
+  getCreateAccountInstruction,
+  getCreateAssociatedTokenInstructionAsync,
+  getInitializeMintInstruction,
+  getMintSize,
+  getMintToCheckedInstruction,
+  getAssociatedTokenAccountAddress,
+  TOKEN_2022_PROGRAM_ADDRESS,
 } from "gill/programs";
 
 const { rpc, rpcSubscriptions, sendAndConfirmTransaction } = createSolanaClient(
@@ -136,7 +136,6 @@ async function setup() {
   const signedTx = await signTransactionMessageWithSigners(tx);
 
   const txSignature = getSignatureFromTransaction(signedTx);
-  console.log("Transaction Signature:", txSignature);
 
   await sendAndConfirmTransaction(signedTx);
 

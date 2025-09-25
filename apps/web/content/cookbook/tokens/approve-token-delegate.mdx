@@ -14,25 +14,24 @@ is like an another owner of your token account.
 
 ```ts !! title="Gill"
 import {
+  airdropFactory,
   createSolanaClient,
-  generateKeyPairSigner,
   createTransaction,
-  signTransactionMessageWithSigners,
+  generateKeyPairSigner,
   getExplorerLink,
   getSignatureFromTransaction,
-  generateKeyPairSigner,
-  airdropFactory,
-  lamports
+  lamports,
+  signTransactionMessageWithSigners,
 } from "gill";
 import {
-  getMintSize,
-  getCreateAccountInstruction,
-  TOKEN_2022_PROGRAM_ADDRESS,
-  getInitializeMintInstruction,
+  getApproveCheckedInstruction,
   getAssociatedTokenAccountAddress,
+  getCreateAccountInstruction,
   getCreateAssociatedTokenInstructionAsync,
+  getInitializeMintInstruction,
+  getMintSize,
   getMintToCheckedInstruction,
-  getApproveCheckedInstruction
+  TOKEN_2022_PROGRAM_ADDRESS,
 } from "gill/programs";
 
 const { rpc, rpcSubscriptions, sendAndConfirmTransaction } = createSolanaClient(
@@ -144,7 +143,6 @@ async function setup() {
   const signedTx = await signTransactionMessageWithSigners(tx);
 
   const txSignature = getSignatureFromTransaction(signedTx);
-  console.log("Transaction Signature:", txSignature);
 
   await sendAndConfirmTransaction(signedTx);
 
